@@ -34,6 +34,19 @@ io.on('connection',(socket)=>{
   //   console.log('createEmail', newEmail);
   // });
 
+  // socket.emit from admin text - welcome to the chat app
+  socket.emit('newMessage',{
+    from: "Admin",
+    text: "Welcome to the Chat App",
+    createdAt: new Date().getTime()
+  });
+  //socket.broadcast from admin - new user joined
+  socket.broadcast.emit('newMessage',{
+    from: "Admin",
+    text: "New User joined the Chat App",
+    createdAt: new Date().getTime()
+  });
+
   socket.on('createMessage',(message)=>{
     console.log('createdMessage', message);
 //socket.emit sends a message to only that socket
@@ -43,6 +56,13 @@ io.on('connection',(socket)=>{
       text: message.text,
       createdAt: new Date().getTime()
     });
+
+    //broadcast will send to all connections except the one sending it
+    // socket.broadcast.emit('newMessage',{
+    //   from: message.from,
+    //   text: message.text,
+    //   createdAt: new Date().getTime()
+    // })
   });
 
   socket.on('disconnect',()=>{
