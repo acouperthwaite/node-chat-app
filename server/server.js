@@ -4,6 +4,7 @@ const express = require('express'); //to set up web server
 const socketIO = require('socket.io'); //to communicate between front and backend
 
 const {generateMessage} = require('./utils/message');
+const {generateLocationMessage} = require('./utils/message');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
 // console.log(__dirname + '/../public'); //old way
@@ -25,10 +26,12 @@ io.on('connection',(socket)=>{
 
   socket.on('createMessage',(message, callback)=>{
     console.log('createdMessage', message);
-
     io.emit('newMessage',generateMessage(message.from, message.text));
-
     callback('This is from the server');
+  });
+
+  socket.on('createLocationMessage', (coords)=>{
+    io.emit('newLocationMessage', generateLocationMessage('Admin',coords.latitude,coords.longitude));
   });
 
   socket.on('disconnect',()=>{
